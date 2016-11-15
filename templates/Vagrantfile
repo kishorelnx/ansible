@@ -1,0 +1,38 @@
+Vagrant.configure('2') do |config|
+  config.vm.box = 'ubuntu/trusty64'
+  {
+    'ansible'    => '10.0.0.20',
+    'webserver'  => '10.0.0.30',
+    'db'         => '10.0.0.40',
+  }.each do |short_name, ip|
+    config.vm.define short_name do |client|
+	#VBoxManage.exe list bridgedifs to list the possible bridge interface 
+	client.vm.network "public_network", bridge: 'Broadcom 802.11n Network Adapter', ip: ip
+	#client.vm.network "public_network"
+	#client.vm.network "public_network", bridged: "Adapter 2" 
+    #client.vm.network 'private_network', ip: ip
+	#agrant plugin install vagrant-hostsupdater
+    client.vm.hostname = "#{short_name}.kishore.com"
+	#client.ghost.hosts = ["alias.testing.de", "alias2.somedomain.com"]
+   client.ssh.forward_agent = true
+   #client.vm.network "forwarded_port", guest: 80, host: 8080
+   #client.vm.synced_folder "D:\Download Manager", "/vagrant_data"
+   client.vm.synced_folder "../ansible", "/vagrant_data"
+   #client.ssh.username = "vagrant"
+   #client.ssh.password = "vagrant"
+   client.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+   client.vm.provision "shell", inline: <<-SHELL
+			sudo apt-get clean
+		SHELL
+		
+	client.vm.provider "virtualbox" do |v|
+		v.name = "#{short_name}.kishore.com"
+		v.gui = true
+		v.memory = 1024
+		v.cpus =2
+		v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+        v.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
+	 end
+    end
+  end
+end
