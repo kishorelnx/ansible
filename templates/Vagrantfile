@@ -43,10 +43,24 @@ Vagrant.configure('2') do |config|
    # THE BELOW ENTRY WILL AVOID WARNING LIKE TTY NO PRESENT
    
    client.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+   # Shell Provisioner	   
+	    # Script Arguments
+	    
+   #client.vm.provision "shell" do |s|
+   # s.inline = "echo $1"
+    #s.args   = "'hello, world!'"
+	    
+	    #External Script
+	    
+	    #client.vm.provision "shell", path: "script.sh"
+	    #client.vm.provision "shell", path: "https://example.com/provisioner.sh"
+	    #inline: "/bin/sh /path/to/the/script/already/on/the/guest.sh"
+	    
+	   # Inline Script
    client.vm.provision "shell", inline: <<-SHELL
 			sudo apt-get clean
 		SHELL
-		
+    		
 	client.vm.provider "virtualbox" do |v|
 		v.name = "#{short_name}.kishore.com"
 		v.gui = false
