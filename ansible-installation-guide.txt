@@ -2,6 +2,7 @@ https://valdhaus.co/writings/ansible-ubuntu-debian/
 
 apt-get update
 apt-get install python-pip python-dev git -y
+pip pip install -U setuptools
 pip install PyYAML jinja2 paramiko
 git clone https://github.com/ansible/ansible.git
 cd ansible
